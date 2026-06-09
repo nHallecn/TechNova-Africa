@@ -34,14 +34,14 @@ export default function ProductCard({ product, className = '' }) {
 
       {/* Info */}
       <div className="p-6">
-        <h3 className="font-bold text-lg text-[var(--color-text)] dark:text-[var(--color-dark-text)] leading-tight">
+        <h3 className="font-bold text-lg text-[var(--text)] leading-tight">
           {name}
         </h3>
-        <p className="text-sm text-[var(--color-text-secondary)] dark:text-[var(--color-dark-text-secondary)] mt-1 mb-4">
+        <p className="text-sm text-[var(--text-secondary)] mt-1 mb-4">
           {tagline}
         </p>
         <div className="flex-between">
-          <span className="font-bold text-base text-[var(--color-text)] dark:text-[var(--color-dark-text)]">
+          <span className="font-bold text-base text-[var(--text)]">
             {price}
           </span>
           <button

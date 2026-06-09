@@ -1,156 +1,98 @@
 import { useEffect, useRef } from 'react'
+import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { useFadeInUp, useStaggerReveal } from '../../hooks/useGSAP'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const PILLARS = [
-  {
-    icon: (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-        <circle cx="16" cy="16" r="14" fill="currentColor" fillOpacity="0.15" />
-        <path d="M10 16l4 4 8-8" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-    ),
-    title: '2-Year Warranty',
-    desc: 'Every device ships with a full manufacturer warranty and in-country service support.',
-  },
-  {
-    icon: (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-        <circle cx="16" cy="16" r="14" fill="currentColor" fillOpacity="0.15" />
-        <path d="M16 8v8l5 3" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
-      </svg>
-    ),
-    title: 'Same-Day Delivery',
-    desc: 'Order before noon in Yaoundé, Douala, Abidjan, Lagos and more for same-day delivery.',
-  },
-  {
-    icon: (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-        <circle cx="16" cy="16" r="14" fill="currentColor" fillOpacity="0.15" />
-        <rect x="10" y="12" width="12" height="10" rx="2" stroke="currentColor" strokeWidth="2.5"/>
-        <path d="M13 12V10a3 3 0 016 0v2" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
-      </svg>
-    ),
-    title: 'Secure Payments',
-    desc: 'MTN MoMo, Orange Money, Visa, Mastercard — all payments are encrypted and secure.',
-  },
-  {
-    icon: (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-        <circle cx="16" cy="16" r="14" fill="currentColor" fillOpacity="0.15" />
-        <path d="M8 20s2-3 8-3 8 3 8 3" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
-        <circle cx="16" cy="13" r="3" stroke="currentColor" strokeWidth="2.5"/>
-      </svg>
-    ),
-    title: 'Local Support',
-    desc: 'French and English customer support available 7 days a week via call, chat, and WhatsApp.',
-  },
-  {
-    icon: (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-        <circle cx="16" cy="16" r="14" fill="currentColor" fillOpacity="0.15" />
-        <path d="M12 20l-4-4 4-4M20 12l4 4-4 4" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-    ),
-    title: 'Trade-In Program',
-    desc: 'Trade in any working device and get up to XAF 200,000 off your upgrade instantly.',
-  },
-  {
-    icon: (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-        <circle cx="16" cy="16" r="14" fill="currentColor" fillOpacity="0.15" />
-        <path d="M16 10v2M16 20v2M10 16h2M20 16h2" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
-        <circle cx="16" cy="16" r="4" stroke="currentColor" strokeWidth="2.5"/>
-      </svg>
-    ),
-    title: 'Energy Efficient',
-    desc: 'All appliances are rated A+ or above. Built for African voltage and climate conditions.',
-  },
+  { icon: '✓', title: '2-Year Warranty', desc: 'Every device ships with a full manufacturer warranty and in-country service support.' },
+  { icon: '⚡', title: 'Same-Day Delivery', desc: 'Order before noon in Yaoundé, Douala, Abidjan, Lagos and more for same-day delivery.' },
+  { icon: '🔒', title: 'Secure Payments', desc: 'MTN MoMo, Orange Money, Visa, Mastercard — all payments are encrypted and secure.' },
+  { icon: '💬', title: 'Local Support', desc: 'French and English customer support available 7 days a week via call, chat, and WhatsApp.' },
+  { icon: '↩', title: 'Trade-In Program', desc: 'Trade in any working device and get up to XAF 200,000 off your upgrade instantly.' },
+  { icon: '🌱', title: 'Energy Efficient', desc: 'All appliances are A+ rated. Built for African voltage and climate conditions.' },
 ]
 
-const COUNTRIES = [
-  'Cameroon', 'Nigeria', 'Côte d\'Ivoire', 'Senegal', 'Ghana',
-  'Kenya', 'Ethiopia', 'Tanzania', 'Uganda', 'Rwanda',
-  'DR Congo', 'South Africa', 'Egypt', 'Morocco', 'Tunisia',
-]
+const COUNTRIES = ['Cameroon','Nigeria',"Côte d'Ivoire",'Senegal','Ghana','Kenya','Ethiopia','Tanzania','Uganda','Rwanda','DR Congo','South Africa','Egypt','Morocco','Tunisia']
 
 export default function WhySection() {
-  const headingRef = useFadeInUp()
-  const pillarsRef = useStaggerReveal('.pillar-item', { stagger: 0.08 })
-  const countriesRef = useRef(null)
+  const tickerRef = useRef(null)
+  const sectionRef = useRef(null)
 
-  // Countries ticker
   useEffect(() => {
-    const el = countriesRef.current
+    const el = tickerRef.current
     if (!el) return
-    const tween = gsap.to(el, {
-      x: '-50%',
-      duration: 20,
-      ease: 'none',
-      repeat: -1,
-    })
+    const w = el.scrollWidth / 2
+    const tween = gsap.to(el, { x: -w, duration: 22, ease: 'none', repeat: -1 })
     return () => tween.kill()
   }, [])
 
+  useGSAP(() => {
+    gsap.fromTo('.why-heading', { opacity: 0, y: 30 }, {
+      opacity: 1, y: 0, duration: 0.8,
+      scrollTrigger: { trigger: '.why-heading', start: 'top 85%' }
+    })
+    gsap.fromTo('.pillar-item', { opacity: 0, y: 30 }, {
+      opacity: 1, y: 0, duration: 0.6, stagger: 0.08,
+      scrollTrigger: { trigger: '.pillars-grid', start: 'top 80%' }
+    })
+  }, { scope: sectionRef })
+
   return (
-    <section id="about" className="section bg-[var(--color-bg)] dark:bg-[var(--color-dark-bg)]">
-      <div className="container mx-auto">
-        {/* Header */}
-        <div ref={headingRef} className="text-center mb-16">
-          <p className="text-sm font-bold text-[var(--color-brand)] dark:text-[var(--color-accent)] mb-3 uppercase tracking-widest">
-            Why TechNova?
-          </p>
-          <h2 className="font-black text-4xl lg:text-6xl text-[var(--color-text)] dark:text-[var(--color-dark-text)] max-w-3xl mx-auto leading-tight">
+    <section id="about" ref={sectionRef}
+      className="py-20 lg:py-32" style={{ backgroundColor: 'var(--bg)' }}>
+      <div className="container mx-auto px-5 2xl:px-0">
+
+        <div className="why-heading text-center mb-16 opacity-0">
+          <p className="font-semibold text-sm uppercase tracking-widest mb-3"
+            style={{ color: 'var(--color-primary)' }}>Why TechNova?</p>
+          <h2 className="font-bold text-4xl lg:text-6xl max-w-3xl mx-auto" style={{ color: 'var(--text)' }}>
             Built different.{' '}
             <span className="text-brand-gradient">For Africa.</span>
           </h2>
-          <p className="text-[var(--color-text-secondary)] dark:text-[var(--color-dark-text-secondary)] mt-5 max-w-lg mx-auto leading-relaxed">
+          <p className="font-regular mt-5 max-w-lg mx-auto" style={{ color: 'var(--text-muted)' }}>
             We don't just sell technology. We build ecosystems that work for the realities of African markets, infrastructure, and people.
           </p>
         </div>
 
-        {/* Pillars grid */}
-        <div ref={pillarsRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
-          {PILLARS.map((p) => (
-            <div
-              key={p.title}
-              className="pillar-item group p-7 rounded-3xl
-                bg-[var(--color-surface)] dark:bg-[var(--color-dark-surface)]
-                hover:bg-gradient-to-br hover:from-[var(--color-brand)] hover:to-[var(--color-accent)]
-                transition-all duration-400 cursor-default"
-            >
-              <div className="text-[var(--color-brand)] dark:text-[var(--color-accent)] group-hover:text-white mb-5 transition-colors duration-300">
-                {p.icon}
-              </div>
-              <h3 className="font-black text-xl text-[var(--color-text)] dark:text-[var(--color-dark-text)] group-hover:text-white mb-2 transition-colors duration-300">
-                {p.title}
-              </h3>
-              <p className="text-sm text-[var(--color-text-secondary)] dark:text-[var(--color-dark-text-secondary)] group-hover:text-white/80 leading-relaxed transition-colors duration-300">
-                {p.desc}
-              </p>
+        {/* Pillars */}
+        <div className="pillars-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-20">
+          {PILLARS.map(p => (
+            <div key={p.title} className="pillar-item group p-7 rounded-3xl cursor-default opacity-0
+              transition-all duration-400"
+              style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border)' }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, #0071e3 0%, #00c8ff 100%)'
+                e.currentTarget.style.borderColor = 'transparent'
+                e.currentTarget.querySelectorAll('[data-text]').forEach(el => el.style.color = '#fff')
+                e.currentTarget.querySelectorAll('[data-muted]').forEach(el => el.style.color = 'rgba(255,255,255,0.75)')
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = 'var(--bg-card)'
+                e.currentTarget.style.borderColor = 'var(--border)'
+                e.currentTarget.querySelectorAll('[data-text]').forEach(el => el.style.color = 'var(--text)')
+                e.currentTarget.querySelectorAll('[data-muted]').forEach(el => el.style.color = 'var(--text-muted)')
+              }}>
+              <span className="text-2xl mb-4 block">{p.icon}</span>
+              <h3 className="font-bold text-lg mb-2 transition-colors duration-300" data-text
+                style={{ color: 'var(--text)' }}>{p.title}</h3>
+              <p className="font-regular text-sm leading-relaxed transition-colors duration-300" data-muted
+                style={{ color: 'var(--text-muted)' }}>{p.desc}</p>
             </div>
           ))}
         </div>
 
-        {/* Countries strip */}
-        <div className="overflow-hidden rounded-2xl bg-[var(--color-surface)] dark:bg-[var(--color-dark-surface)] py-5 px-4">
-          <p className="text-xs font-bold text-[var(--color-text-muted)] dark:text-[var(--color-dark-text-muted)] uppercase tracking-widest text-center mb-4">
-            Available in 50+ African countries
-          </p>
+        {/* Countries ticker */}
+        <div className="rounded-2xl overflow-hidden py-5 px-4" style={{ backgroundColor: 'var(--surface)' }}>
+          <p className="font-semibold text-xs uppercase tracking-widest text-center mb-4"
+            style={{ color: 'var(--text-muted)' }}>Available in 50+ African countries</p>
           <div className="overflow-hidden">
-            <div ref={countriesRef} className="flex gap-3 whitespace-nowrap w-fit">
+            <div ref={tickerRef} className="flex gap-3 whitespace-nowrap w-fit">
               {[...COUNTRIES, ...COUNTRIES].map((c, i) => (
-                <span
-                  key={i}
-                  className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-semibold
-                    bg-white dark:bg-[var(--color-dark-bg-card)]
-                    text-[var(--color-text)] dark:text-[var(--color-dark-text)]
-                    border border-[var(--color-border)] dark:border-[var(--color-dark-border)]"
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-brand)] dark:bg-[var(--color-accent)]" />
+                <span key={i} className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full font-semibold text-sm"
+                  style={{ backgroundColor: 'var(--bg-card)', color: 'var(--text)', border: '1px solid var(--border)' }}>
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: 'var(--color-primary)' }} />
                   {c}
                 </span>
               ))}

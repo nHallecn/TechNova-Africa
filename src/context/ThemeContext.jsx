@@ -9,20 +9,19 @@ export function ThemeProvider({ children }) {
       if (stored) return stored
       return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
     }
-    return 'light'
+    return 'dark'
   })
 
   useEffect(() => {
-    const root = document.body
     if (theme === 'dark') {
-      root.classList.add('dark')
+      document.body.classList.add('dark')
     } else {
-      root.classList.remove('dark')
+      document.body.classList.remove('dark')
     }
     localStorage.setItem('technova-theme', theme)
   }, [theme])
 
-  const toggleTheme = () => setTheme(prev => (prev === 'dark' ? 'light' : 'dark'))
+  const toggleTheme = () => setTheme(prev => prev === 'dark' ? 'light' : 'dark')
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme, isDark: theme === 'dark' }}>

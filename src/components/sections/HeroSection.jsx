@@ -1,133 +1,96 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import GlobeCanvas from '../three/GlobeCanvas'
-import ParticleField from '../three/ParticleField'
-import Button from '../ui/Button'
 import { ArrowRight, Play } from 'lucide-react'
 
 export default function HeroSection() {
-  const headingRef = useRef(null)
-  const subRef = useRef(null)
-  const ctaRef = useRef(null)
-  const badgeRef = useRef(null)
-  const globeWrapRef = useRef(null)
+  const sectionRef = useRef(null)
 
   useEffect(() => {
-    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
-
-    tl.fromTo(badgeRef.current, { opacity: 0, y: -16 }, { opacity: 1, y: 0, duration: 0.6 })
-      .fromTo(headingRef.current.querySelectorAll('.word'), { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.9, stagger: 0.08 }, '-=0.2')
-      .fromTo(subRef.current, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.7 }, '-=0.4')
-      .fromTo(ctaRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7 }, '-=0.4')
-      .fromTo(globeWrapRef.current, { opacity: 0, scale: 0.85 }, { opacity: 1, scale: 1, duration: 1.2, ease: 'power2.out' }, '-=0.8')
+    const ctx = gsap.context(() => {
+      gsap.fromTo('.hero-eyebrow', { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' })
+      gsap.fromTo('.hero-word', { opacity: 0, y: 50 },
+        { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', stagger: 0.07, delay: 0.2 })
+      gsap.fromTo('.hero-sub', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, delay: 0.7 })
+      gsap.fromTo('.hero-ctas', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, delay: 0.9 })
+      gsap.fromTo('.hero-stats .stat', { opacity: 0, y: 16 },
+        { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, delay: 1.1 })
+      gsap.fromTo('.hero-globe', { opacity: 0, scale: 0.85 },
+        { opacity: 1, scale: 1, duration: 1.3, ease: 'power2.out', delay: 0.3 })
+    }, sectionRef)
+    return () => ctx.revert()
   }, [])
 
   return (
-    <section className="relative min-h-screen overflow-hidden flex items-center">
-      {/* Particle background */}
-      <div className="absolute inset-0 z-0">
-        <ParticleField count={100} />
-      </div>
+    <section id="hero" ref={sectionRef}>
+      {/* Subtle grid bg */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.03]"
+        style={{ backgroundImage: 'radial-gradient(circle, var(--text) 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
 
-      {/* Gradient backdrop */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute top-1/4 -left-40 w-96 h-96 rounded-full blur-3xl opacity-20 dark:opacity-30 bg-brand" />
-        <div className="absolute bottom-1/4 -right-40 w-96 h-96 rounded-full blur-3xl opacity-15 dark:opacity-25 bg-accent" />
-      </div>
+      <div className="grid lg:grid-cols-2 gap-8 container mx-auto px-5 2xl:px-0 items-center w-full lg:min-h-screen">
+        {/* Left */}
+        <div className="col-center lg:items-start text-center lg:text-left pt-8 lg:pt-0">
+          <p className="hero-eyebrow opacity-0">New — TechNova Nova S25 Ultra</p>
 
-      <div className="container mx-auto px-5 2xl:px-0 relative z-10 pt-20 lg:pt-0">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-0 items-center min-h-screen lg:min-h-0 lg:h-screen">
-
-          {/* Left: Text content */}
-          <div className="col-center lg:items-start text-center lg:text-left">
-
-            {/* Heading */}
-            <h1
-              ref={headingRef}
-              className="font-black text-5xl lg:text-6xl xl:text-7xl leading-[0.95] tracking-tight text-(--color-text) dark:text-(--color-dark-text) mb-6"
-            >
-              {'Innovation\nFor Africa.'.split('\n').map((line, li) => (
-                <span key={li} className="block overflow-hidden">
-                  {line.split(' ').map((w, wi) => (
-                    <span key={wi} className="word inline-block mr-[0.25em] opacity-0">
-                      {li === 0 ? (
-                        <span className="text-brand-gradient">{w}</span>
-                      ) : w === 'Africa.' ? (
-                        <span>{w}</span>
-                      ) : w}
-                    </span>
-                  ))}
-                </span>
+          <h1 className="opacity-0">
+            {'Innovation For'.split(' ').map((w, i) => (
+              <span key={i} className="hero-word inline-block overflow-hidden mr-[0.25em]">{w}</span>
+            ))}
+            <span className="block">
+              {'Africa.'.split('').map((ch, i) => (
+                <span key={i} className="hero-word inline-block overflow-hidden text-brand-gradient">{ch}</span>
               ))}
-            </h1>
+            </span>
+          </h1>
 
-            {/* Sub */}
-            <p
-              ref={subRef}
-              className="text-lg lg:text-xl text-(--color-text-secondary) dark:text-(--color-dark-text-secondary) max-w-md mb-10 leading-relaxed opacity-0"
-            >
-              Cutting-edge technology designed for every corner of Africa. Experience the future of mobile, home, and life.
-            </p>
+          <p className="hero-sub opacity-0">
+            Cutting-edge technology designed for every corner of Africa. Experience the future of mobile, home, and life.
+          </p>
 
-            {/* CTA group */}
-            <div ref={ctaRef} className="flex flex-wrap gap-4 justify-center lg:justify-start opacity-0">
-              <Button size="lg">
-                Shop Now <ArrowRight size={16} className="ml-2" />
-              </Button>
-              <Button variant="outline" size="lg">
-                <Play size={14} className="mr-2" fill="currentColor" />
-                Watch Film
-              </Button>
-            </div>
-
-            {/* Stats row */}
-            <div className="flex gap-8 mt-12 justify-center lg:justify-start">
-              {[
-                { val: '50+', label: 'Countries served' },
-                { val: '10M+', label: 'Happy customers' },
-                { val: '#1', label: 'In Africa 2025' },
-              ].map((s) => (
-                <div key={s.label} className="text-center lg:text-left">
-                  <div className="font-black text-2xl text-(--color-text) dark:text-(--color-dark-text)">{s.val}</div>
-                  <div className="text-xs text-(--color-text-muted) dark:text-(--color-dark-text-muted) mt-0.5">{s.label}</div>
-                </div>
-              ))}
-            </div>
+          <div className="hero-ctas opacity-0">
+            <button className="btn-primary flex items-center gap-2">
+              Shop Now <ArrowRight size={15} />
+            </button>
+            <button className="btn-ghost flex items-center gap-2">
+              <Play size={13} fill="currentColor" /> Watch Film
+            </button>
           </div>
 
-          {/* Right: Globe */}
-          <div ref={globeWrapRef} className="relative h-72 lg:h-screen max-h-175 flex items-center justify-center opacity-0">
-            <div className="relative w-full h-full max-w-lg mx-auto">
-              <GlobeCanvas />
-              {/* Floating product callouts */}
-              <FloatingTag top="20%" left="5%" label="Nova S25 Ultra" sub="Just launched" />
-              <FloatingTag bottom="30%" right="0%" label="Africa-first 5G" sub="50+ countries" />
-            </div>
+          <div className="hero-stats flex gap-10 justify-center lg:justify-start mt-10">
+            {[['50+','Countries'], ['10M+','Customers'], ['#1','Africa 2025']].map(([v, l]) => (
+              <div key={l} className="stat text-center lg:text-left opacity-0">
+                <div className="stat-val">{v}</div>
+                <div className="stat-label">{l}</div>
+              </div>
+            ))}
           </div>
+        </div>
 
+        {/* Right: Globe */}
+        <div className="hero-globe relative h-64 lg:h-[80vh] max-h-[640px] opacity-0">
+          <GlobeCanvas />
+          {/* Floating tags */}
+          <FloatingTag style={{ top: '18%', left: '2%' }} label="Nova S25 Ultra" sub="Just launched" />
+          <FloatingTag style={{ bottom: '28%', right: '0%' }} label="Africa-first 5G" sub="50+ countries" />
         </div>
       </div>
 
       {/* Scroll indicator */}
-      {/* <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-60">
-        <span className="text-xs text-(--color-text-muted) dark:text-(--color-dark-text-muted)">Scroll</span>
-        <div className="w-px h-10 bg-linear-to-b from-(--color-text-muted) to-transparent animate-pulse" />
-      </div> */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 col-center gap-1.5 opacity-40">
+        <span className="font-regular text-xs" style={{ color: 'var(--text-muted)' }}>Scroll</span>
+        <div className="w-px h-8 animate-pulse" style={{ background: 'linear-gradient(to bottom, var(--text-muted), transparent)' }} />
+      </div>
     </section>
   )
 }
 
-function FloatingTag({ top, left, right, bottom, label, sub }) {
+function FloatingTag({ style, label, sub }) {
   return (
-    <div
-      className="absolute z-20 hidden lg:flex flex-col gap-0.5 px-4 py-2.5 rounded-2xl
-        bg-white/80 dark:bg-black/60 backdrop-blur-md
-        border border-(--color-border) dark:border-(--color-dark-border)
-        shadow-lg text-left"
-      style={{ top, left, right, bottom }}
-    >
-      <span className="text-xs font-bold text-(--color-text) dark:text-(--color-dark-text)">{label}</span>
-      <span className="text-[10px] text-(--color-text-muted) dark:text-(--color-dark-text-muted)">{sub}</span>
+    <div className="absolute hidden lg:flex flex-col gap-0.5 px-4 py-2.5 rounded-2xl text-left"
+      style={{ ...style, backgroundColor: 'color-mix(in srgb, var(--bg-card) 85%, transparent)',
+        backdropFilter: 'blur(12px)', border: '1px solid var(--border)', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}>
+      <span className="font-semibold text-xs" style={{ color: 'var(--text)' }}>{label}</span>
+      <span className="font-regular text-[10px]" style={{ color: 'var(--text-muted)' }}>{sub}</span>
     </div>
   )
 }

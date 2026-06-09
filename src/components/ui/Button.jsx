@@ -4,8 +4,8 @@ export default function Button({ children, variant = 'primary', size = 'md', cla
   const variants = {
     primary: 'bg-[var(--color-brand)] text-white hover:bg-[var(--color-brand-light)] shadow-lg hover:shadow-xl hover:-translate-y-0.5',
     outline: 'border-2 border-[var(--color-brand)] text-[var(--color-brand)] dark:text-[var(--color-accent)] dark:border-[var(--color-accent)] hover:bg-[var(--color-brand)] hover:text-white dark:hover:bg-[var(--color-accent)] dark:hover:text-black',
-    ghost: 'text-[var(--color-text)] dark:text-[var(--color-dark-text)] hover:bg-[var(--color-surface)] dark:hover:bg-[var(--color-dark-surface)]',
-    white: 'bg-white text-[var(--color-brand)] hover:bg-[var(--color-surface)] shadow-lg hover:-translate-y-0.5',
+    ghost: 'text-[var(--text)] hover:bg-[var(--surface)]',
+    white: 'bg-white text-[var(--color-brand)] hover:bg-[var(--surface)] shadow-lg hover:-translate-y-0.5',
   }
 
   const sizes = {

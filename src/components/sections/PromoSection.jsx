@@ -1,79 +1,61 @@
 import { useEffect, useRef } from 'react'
+import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
-import { useFadeInUp, useStaggerReveal } from '../../hooks/useGSAP'
-import Button from '../ui/Button'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-const MARQUEE_ITEMS = [
-  'Up to 30% off · ',
-  'Free shipping nationwide · ',
-  'Trade-in your old device · ',
-  '0% installment available · ',
-  'Official warranty included · ',
-  'Same-day delivery in major cities · ',
+gsap.registerPlugin(ScrollTrigger)
+
+const TICKER_ITEMS = [
+  'Up to 30% off ·', 'Free shipping nationwide ·', 'Trade-in your old device ·',
+  '0% installment ·', 'Official warranty included ·', 'Same-day delivery ·',
+  'Pay with MoMo ·', 'Pay with Orange Money ·',
 ]
 
 const DEALS = [
-  {
-    title: 'Student Offer',
-    description: 'Verified students get 15% off all devices and free Nova Buds with any phone.',
-    discount: '15% OFF',
-    color: '#7c3aed',
-    bg: 'from-purple-900/20 to-purple-900/5',
-    expiry: 'Ends 30 June',
-  },
-  {
-    title: 'Bundle & Save',
-    description: 'Buy a Nova S25 + NovaTab and save XAF 120,000. Perfect for work and play.',
-    discount: 'Save 120K',
-    color: '#059669',
-    bg: 'from-emerald-900/20 to-emerald-900/5',
-    expiry: 'Limited stock',
-  },
-  {
-    title: 'Trade-In Deal',
-    description: 'Trade in any smartphone and get up to XAF 200,000 off your next Nova device.',
-    discount: 'Up to 200K',
-    color: '#ea580c',
-    bg: 'from-orange-900/20 to-orange-900/5',
-    expiry: 'Ongoing',
-  },
+  { title: 'Student Offer', desc: 'Verified students get 15% off all devices + free Nova Buds with any phone.', badge: '15% OFF', color: '#7c3aed', expiry: 'Ends 30 June' },
+  { title: 'Bundle & Save', desc: 'Buy a Nova S25 + NovaTab and save XAF 120,000. Perfect for work and play.', badge: 'Save 120K', color: '#059669', expiry: 'Limited stock' },
+  { title: 'Trade-In Deal', desc: 'Trade in any smartphone and get up to XAF 200,000 off your next Nova device.', badge: 'Up to 200K', color: '#ea580c', expiry: 'Ongoing' },
 ]
 
 export default function PromoSection() {
-  const marqueeRef = useRef(null)
-  const headingRef = useFadeInUp()
-  const cardsRef = useStaggerReveal('.deal-card', { stagger: 0.1 })
+  const tickerRef = useRef(null)
+  const sectionRef = useRef(null)
 
-  // Infinite marquee animation
   useEffect(() => {
-    if (!marqueeRef.current) return
-    const el = marqueeRef.current
-    const width = el.scrollWidth / 2
-
-    const tween = gsap.to(el, {
-      x: -width,
-      duration: 28,
-      ease: 'none',
-      repeat: -1,
-    })
-
+    const el = tickerRef.current
+    if (!el) return
+    const w = el.scrollWidth / 2
+    const tween = gsap.to(el, { x: -w, duration: 30, ease: 'none', repeat: -1 })
     return () => tween.kill()
   }, [])
 
+  useGSAP(() => {
+    gsap.fromTo('.promo-heading', { opacity: 0, y: 30 }, {
+      opacity: 1, y: 0, duration: 0.8,
+      scrollTrigger: { trigger: '.promo-heading', start: 'top 85%' }
+    })
+    gsap.fromTo('.deal-card', { opacity: 0, y: 40 }, {
+      opacity: 1, y: 0, duration: 0.7, stagger: 0.1, ease: 'power2.out',
+      scrollTrigger: { trigger: '.deals-row', start: 'top 80%' }
+    })
+    gsap.fromTo('.momo-banner', { opacity: 0, scale: 0.96 }, {
+      opacity: 1, scale: 1, duration: 0.8,
+      scrollTrigger: { trigger: '.momo-banner', start: 'top 85%' }
+    })
+  }, { scope: sectionRef })
+
   return (
-    <section
-      id="deals"
-      className="py-20 overflow-hidden relative"
-      style={{ background: 'var(--color-bg-secondary)' }}
-    >
-      {/* Marquee ticker */}
-      <div className="relative overflow-hidden mb-16 border-y border-[var(--color-border)] dark:border-[var(--color-dark-border)] bg-[var(--color-brand)] py-3">
-        <div ref={marqueeRef} className="flex whitespace-nowrap">
-          {/* Doubled for seamless loop */}
-          {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
-            <span key={i} className="text-white text-sm font-bold px-2 inline-flex items-center">
+    <section id="deals" ref={sectionRef}
+      className="py-20 lg:py-32 overflow-hidden" style={{ backgroundColor: 'var(--bg-secondary)' }}>
+
+      {/* Ticker */}
+      <div className="overflow-hidden mb-16 py-3"
+        style={{ backgroundColor: 'var(--color-primary)', borderTop: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+        <div ref={tickerRef} className="flex whitespace-nowrap w-fit">
+          {[...TICKER_ITEMS, ...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
+            <span key={i} className="font-semibold text-sm text-white px-3 inline-flex items-center gap-2">
               {item}
-              <span className="inline-block w-1.5 h-1.5 rounded-full bg-white/50 mx-2" />
+              <span className="inline-block w-1 h-1 rounded-full bg-white/40" />
             </span>
           ))}
         </div>
@@ -81,81 +63,55 @@ export default function PromoSection() {
 
       <div className="container mx-auto px-5 2xl:px-0">
         {/* Heading */}
-        <div ref={headingRef} className="text-center mb-14">
-          <p className="text-sm font-bold text-[var(--color-brand)] dark:text-[var(--color-accent)] mb-3 uppercase tracking-widest">
-            Exclusive Offers
-          </p>
-          <h2 className="font-black text-4xl lg:text-5xl text-[var(--color-text)] dark:text-[var(--color-dark-text)]">
-            Deals made for Africa.
-          </h2>
-          <p className="text-[var(--color-text-secondary)] dark:text-[var(--color-dark-text-secondary)] mt-4 max-w-md mx-auto">
+        <div className="promo-heading text-center mb-14 opacity-0">
+          <p className="font-semibold text-sm uppercase tracking-widest mb-3"
+            style={{ color: 'var(--color-primary)' }}>Exclusive Offers</p>
+          <h2 className="font-bold text-4xl lg:text-5xl" style={{ color: 'var(--text)' }}>Deals made for Africa.</h2>
+          <p className="font-regular mt-4 max-w-md mx-auto" style={{ color: 'var(--text-muted)' }}>
             Localised pricing, mobile money payments, and offers tailored for your market.
           </p>
         </div>
 
         {/* Deal cards */}
-        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {DEALS.map((deal) => (
-            <div
-              key={deal.title}
-              className={`deal-card relative overflow-hidden rounded-3xl p-8 bg-gradient-to-br ${deal.bg}
-                border border-[var(--color-border)] dark:border-[var(--color-dark-border)]
-                hover:-translate-y-1.5 hover:shadow-xl transition-all duration-300 group`}
-            >
-              {/* Discount badge */}
-              <div
-                className="inline-block px-4 py-1.5 rounded-full text-white text-sm font-black mb-5"
-                style={{ backgroundColor: deal.color }}
-              >
-                {deal.discount}
-              </div>
-
-              <h3 className="font-black text-2xl text-[var(--color-text)] dark:text-[var(--color-dark-text)] mb-3">
-                {deal.title}
-              </h3>
-              <p className="text-sm text-[var(--color-text-secondary)] dark:text-[var(--color-dark-text-secondary)] leading-relaxed mb-6">
-                {deal.description}
-              </p>
-
+        <div className="deals-row grid grid-cols-1 md:grid-cols-3 gap-5 mb-12">
+          {DEALS.map(deal => (
+            <div key={deal.title} className="deal-card group relative overflow-hidden rounded-3xl p-8 cursor-pointer
+              transition-all duration-300 hover:-translate-y-1.5 opacity-0"
+              style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <span className="inline-block px-4 py-1.5 rounded-full text-white font-bold text-sm mb-5"
+                style={{ backgroundColor: deal.color }}>{deal.badge}</span>
+              <h3 className="font-bold text-2xl mb-3" style={{ color: 'var(--text)' }}>{deal.title}</h3>
+              <p className="font-regular text-sm leading-relaxed mb-6" style={{ color: 'var(--text-muted)' }}>{deal.desc}</p>
               <div className="flex-between">
-                <a
-                  href="#"
-                  className="text-sm font-bold transition-colors duration-300"
-                  style={{ color: deal.color }}
-                >
-                  Shop now →
-                </a>
-                <span className="text-xs text-[var(--color-text-muted)] dark:text-[var(--color-dark-text-muted)]">
-                  {deal.expiry}
-                </span>
+                <a href="#" className="font-bold text-sm transition-colors" style={{ color: deal.color }}>Shop now →</a>
+                <span className="font-regular text-xs" style={{ color: 'var(--text-muted)' }}>{deal.expiry}</span>
               </div>
-
-              {/* Decorative blob */}
-              <div
-                className="absolute -bottom-10 -right-10 w-36 h-36 rounded-full opacity-10 blur-2xl group-hover:opacity-20 transition-opacity duration-500"
-                style={{ backgroundColor: deal.color }}
-              />
+              {/* Glow blob */}
+              <div className="absolute -bottom-8 -right-8 w-32 h-32 rounded-full blur-2xl opacity-10
+                group-hover:opacity-20 transition-opacity duration-500 pointer-events-none"
+                style={{ backgroundColor: deal.color }} />
             </div>
           ))}
         </div>
 
-        {/* Bottom CTA banner */}
-        <div className="mt-12 rounded-3xl overflow-hidden relative p-10 lg:p-14 text-center"
-          style={{ background: 'linear-gradient(135deg, #1428a0 0%, #0891b2 50%, #00c8ff 100%)' }}
-        >
+        {/* Mobile money banner */}
+        <div className="momo-banner relative overflow-hidden rounded-3xl p-10 lg:p-16 text-center opacity-0"
+          style={{ background: 'linear-gradient(135deg, #0a1560 0%, #0071e3 50%, #00c8ff 100%)' }}>
           <div className="relative z-10">
-            <p className="text-white/70 text-sm font-bold uppercase tracking-widest mb-3">Mobile Money Ready</p>
-            <h3 className="font-black text-3xl lg:text-5xl text-white mb-4">
+            <p className="font-semibold text-sm uppercase tracking-widest mb-3 text-white/60">Mobile Money Ready</p>
+            <h3 className="font-bold text-3xl lg:text-5xl text-white mb-4">
               Pay with MTN MoMo or Orange Money
             </h3>
-            <p className="text-white/80 mb-8 max-w-md mx-auto">
+            <p className="text-white/70 mb-8 max-w-md mx-auto font-regular">
               All purchases can be completed with your favourite mobile money wallet. No card needed.
             </p>
-            <Button variant="white" size="lg">Shop with Mobile Money</Button>
+            <button className="px-8 py-3.5 rounded-full font-semibold text-base cursor-pointer transition-all duration-300 hover:opacity-90 hover:-translate-y-0.5"
+              style={{ backgroundColor: '#fff', color: 'var(--color-primary)' }}>
+              Shop with Mobile Money
+            </button>
           </div>
-          {/* Background circles */}
-          <div className="absolute top-0 left-0 w-64 h-64 rounded-full bg-white opacity-5 -translate-x-1/2 -translate-y-1/2" />
-          <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full bg-white opacity-5 translate-x-1/2 translate-y-1/2" />
+          <div className="absolute top-0 left-0 w-64 h-64 rounded-full bg-white/5 -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+          <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full bg-white/5 translate-x-1/3 translate-y-1/3 pointer-events-none" />
         </div>
       </div>
     </section>
