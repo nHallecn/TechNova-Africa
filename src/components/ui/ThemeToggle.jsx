@@ -10,19 +10,28 @@ export default function ThemeToggle() {
       aria-label="Toggle theme"
       className="relative w-10 h-10 rounded-full flex-center cursor-pointer transition-all duration-300
         hover:scale-110 active:scale-95
-        dark:bg-[var(--color-dark-surface)] bg-[var(--color-surface)]
-        dark:text-[var(--color-accent)] text-[var(--color-brand)]
-        border border-[var(--color-border)] dark:border-[var(--color-dark-border)]"
+        bg-[var(--surface)]
+        text-[var(--color-brand)]
+        border border-[var(--border)]"
     >
+      {/* Sun — visible in light mode */}
       <span
         className="absolute transition-all duration-300"
-        style={{ opacity: isDark ? 0 : 1, transform: isDark ? 'rotate(90deg) scale(0)' : 'rotate(0) scale(1)' }}
+        style={{
+          opacity: isDark ? 0 : 1,
+          transform: isDark ? 'rotate(90deg) scale(0)' : 'rotate(0deg) scale(1)',
+        }}
       >
         <Sun size={16} />
       </span>
+      {/* Moon — visible in dark mode */}
       <span
         className="absolute transition-all duration-300"
-        style={{ opacity: isDark ? 1 : 0, transform: isDark ? 'rotate(0) scale(1)' : 'rotate(-90deg) scale(0)' }}
+        style={{
+          opacity: isDark ? 1 : 0,
+          transform: isDark ? 'rotate(0deg) scale(1)' : 'rotate(-90deg) scale(0)',
+          color: 'var(--color-accent)',
+        }}
       >
         <Moon size={16} />
       </span>
